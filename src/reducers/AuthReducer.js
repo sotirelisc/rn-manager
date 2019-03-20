@@ -1,11 +1,15 @@
+import {
+  EMAIL_CHANGED
+} from '../actions/types';
+
 const initialState = {
   email: ''
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'email_changed':
-      return action.payload;
+    case EMAIL_CHANGED:
+      return { ...state, email: action.payload };
     default:
       return state;
   }
