@@ -28,7 +28,8 @@ const loginUserSuccess = (dispatch, user) => {
     payload: user
   });
 
-  Actions.employeeList();
+  // Navigate to scene with key "main"
+  Actions.main();
 };
 
 const loginUserFailure = (dispatch, error) => {
@@ -39,7 +40,7 @@ const loginUserFailure = (dispatch, error) => {
 };
 
 export const loginUser = ({ email, password }) => {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({
       type: LOGIN_USER
     });
