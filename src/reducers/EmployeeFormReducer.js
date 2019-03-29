@@ -31,8 +31,7 @@ export default (state = initialState, action) => {
       }
     case EMPLOYEE_CREATE_SUCCESS:
       return {
-        ...state,
-        ...initialState
+        initialState
       }
     case EMPLOYEE_CREATE_FAILURE:
       return {

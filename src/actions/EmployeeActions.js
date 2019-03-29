@@ -4,7 +4,10 @@ import {
   EMPLOYEE_FORM_CHANGED,
   EMPLOYEE_CREATE,
   EMPLOYEE_CREATE_SUCCESS,
-  EMPLOYEE_CREATE_FAILURE
+  EMPLOYEE_CREATE_FAILURE,
+  EMPLOYEE_FETCH,
+  EMPLOYEE_FETCH_SUCCESS,
+  EMPLOYEE_FETCH_FAILURE
 } from './types';
 
 export const employeeFormChanged = ({ prop, value }) => {
@@ -38,12 +41,44 @@ export const employeeCreate = ({ name, phone, shift }) => {
     });
 
     // Get current logged-in user
-    const { currentUser } = firebase.auth(); 
+    const { currentUser } = firebase.auth();
 
     // Reference current user's employee set
     firebase.database().ref(`/users/${currentUser.uid}/employees`)
       .push({ name, phone, shift })
       .then(() => employeeCreateSuccess(dispatch))
       .catch(error => employeeCreateFailure(dispatch, error));
+  };
+};
+
+const employeeFetchSuccess = (dispatch, employees) => {
+  dispatch({
+    type: EMPLOYEE_FETCH_SUCCESS,
+    payload: employees
+  });
+};
+
+const employeeFetchFailure = (dispatch, error) => {
+  dispatch({
+    type: EMPLOYEE_FETCH_FAILURE,
+    payload: error
+  });
+};
+
+export const employeeFetch = () => {
+  return dispatch => {
+    dispatch({
+      type: EMPLOYEE_FETCH
+    });
+
+    // Get current logged-in user
+    const { currentUser } = firebase.auth();
+
+    firebase.database().ref(`/users/${currentUser.uid}/employees`)
+      // snapshot is NOT the data itself, just describing them
+      .on('value', snapshot => {
+        employeeFetchSuccess(dispatch, snapshot.val());
+      })
+      .catch(error => employeeFetchFailure(dispatch, error));
   };
 };
